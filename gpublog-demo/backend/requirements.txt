@@ -2,3 +2,6 @@ Flask
 matplotlib
 sklearn
 requests
+scikit-learn
+xlrd
+tensorboard-plugin-profile

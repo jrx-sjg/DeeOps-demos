@@ -9,23 +9,29 @@ services:
     deploy:
       resources:
         reservations:
-          memory: 16Gb
           devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+            - capabilities: [gpu]
 
   translator:
     build: backend
     volumes:
       - models:/checkpoints
-
-  frontend:
-    build: frontend
     ports:
-      - 80:80
-    depends_on:
-      - translator
+      - 5000:5000            
+
+  tensorboard:
+    container_name: tensorboard
+    build: backend
+    volumes:
+      - models:/checkpoints
+    ports:
+      - 6006:6006
+    command: tensorboard --logdir=/checkpoints/eng-fra/graphs --bind_all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]   
 
 volumes:
   models:
