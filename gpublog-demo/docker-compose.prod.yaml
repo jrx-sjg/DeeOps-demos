@@ -1,0 +1,37 @@
+services:
+  training:
+    build: backend
+    command: python model.py
+    environment:
+      PYTHONUNBUFFERED: 0
+    volumes:
+      - models:/checkpoints
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+
+  translator:
+    build: backend
+    volumes:
+      - models:/checkpoints
+    ports:
+      - 5000:5000            
+
+  tensorboard:
+    container_name: tensorboard
+    build: backend
+    volumes:
+      - models:/checkpoints
+    ports:
+      - 6006:6006
+    command: tensorboard --logdir=/checkpoints/eng-fra/graphs --bind_all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]   
+
+volumes:
+  models:
